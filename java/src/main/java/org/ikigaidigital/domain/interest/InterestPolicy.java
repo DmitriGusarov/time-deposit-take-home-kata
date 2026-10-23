@@ -9,20 +9,22 @@ import org.ikigaidigital.TimeDeposit;
  * signature and is a thin loop that resolves the policy for each deposit's plan type
  * and applies it. Adding a new plan then means adding one class, not editing a nested if.
  * <p>
- * Behaviour that the implementations must preserve exactly (pinned by
- * {@code TimeDepositCalculatorCharacterizationTest}):
+ * Contract (the results are pinned by {@code TimeDepositCalculatorCharacterizationTest}):
  * <ul>
- *   <li>no interest at all while {@code days <= 30}, for every plan</li>
- *   <li>interest is computed in {@code double} as {@code balance * annualRate / 12},
- *       then rounded with {@code new BigDecimal(double).setScale(2, HALF_UP)} – not
- *       {@code BigDecimal.valueOf(double)}, which rounds differently on some inputs</li>
- *   <li>unknown plan types earn nothing (no exception)</li>
+ *   <li>an implementation applies only its own plan's rule and returns the <em>unrounded</em>
+ *       monthly interest, or 0 when that rule pays nothing</li>
+ *   <li>interest is computed in {@code double}, in the order {@code balance * annualRate / 12};
+ *       a different order or {@code BigDecimal} arithmetic can change the rounded result</li>
+ *   <li>the 30-day grace period and the rounding ({@code new BigDecimal(double)
+ *       .setScale(2, HALF_UP)}) are common to all plans and live in the calculator, not here</li>
+ *   <li>unknown plan types are handled by {@link InterestPolicyRegistry}, which falls back to
+ *       {@link NoInterestPolicy}</li>
  * </ul>
  */
 public interface InterestPolicy {
 
     /**
-     * @return the (unrounded) monthly interest for the given deposit, or 0 if none applies.
+     * @return the unrounded monthly interest under this plan's rule, or 0 if the rule pays nothing.
      */
     double monthlyInterest(TimeDeposit deposit);
 }
