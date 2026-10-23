@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: time-deposit-kata
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:timedeposit}
+    username: ${DB_USER:timedeposit}
+    password: ${DB_PASSWORD:timedeposit}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema; Hibernate only checks that the mapping matches it.
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+springdoc:
+  # Swagger UI renders the hand-written contract (src/main/resources/static/openapi.yaml)
+  # rather than a runtime-generated spec, so UI and generated code can never drift apart.
+  # api-docs stays enabled: springdoc only registers Swagger UI when api-docs is on.
+  swagger-ui:
+    url: /openapi.yaml
+    path: /swagger-ui.html
