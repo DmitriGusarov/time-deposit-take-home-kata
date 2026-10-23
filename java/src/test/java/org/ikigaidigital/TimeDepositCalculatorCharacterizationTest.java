@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.within;
 
 /**
@@ -129,6 +130,30 @@ class TimeDepositCalculatorCharacterizationTest {
             // binary noise (the actual value is 1001.6600000000001). That noise is legacy behaviour,
             // not something to fix here; it disappears when the balance is persisted as NUMERIC(19,2).
             assertThat(deposit.getBalance()).isCloseTo(1001.66, within(1e-9));
+        }
+    }
+
+    // Pins legacy behaviour, not desired behaviour: the plan type is only read once days > 30,
+    // and a null plan type then fails. Input validation is out of scope per the kata.
+    @Nested
+    @DisplayName("null plan type")
+    class NullPlanType {
+
+        @Test
+        void isIgnoredWhileDaysAreAtMost30() {
+            TimeDeposit deposit = new TimeDeposit(1, null, 1000.00, 30);
+
+            calculator.updateBalance(List.of(deposit));
+
+            assertThat(deposit.getBalance()).isEqualTo(1000.00);
+        }
+
+        @Test
+        void throwsNullPointerExceptionOnceDaysExceed30() {
+            TimeDeposit deposit = new TimeDeposit(1, null, 1000.00, 31);
+
+            assertThatThrownBy(() -> calculator.updateBalance(List.of(deposit)))
+                    .isInstanceOf(NullPointerException.class);
         }
     }
 
