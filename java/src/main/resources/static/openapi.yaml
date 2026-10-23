@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: XA Bank Time Deposit API
+  version: 1.0.0
+  description: |
+    Time deposit service for XA Bank.
+
+    Exactly two operations are exposed, as required by the kata:
+    * `GET /time-deposits` – list every time deposit with its withdrawals.
+    * `POST /time-deposits/balances` – apply one month of interest to every time deposit.
+
+    Design notes
+    * `POST` is used for the balance update because the operation is not idempotent: every call
+      applies one more accrual period to every deposit, so repeated calls compound. It is a command
+      on the collection, not a replacement of a resource's state, which rules out `PUT`.
+    * The update returns `204 No Content`: the kata asks only to update balances, so the
+      client is expected to call `GET /time-deposits` to read the result.
+servers:
+  - url: http://localhost:8080
+    description: Local development
+tags:
+  - name: time-deposits
+    description: Time deposit plans and their balances
+
+paths:
+  /time-deposits:
+    get:
+      tags: [time-deposits]
+      operationId: getAllTimeDeposits
+      summary: Retrieve all time deposits
+      description: Returns every time deposit stored in the database together with its withdrawals.
+      responses:
+        '200':
+          description: List of all time deposits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeDeposit'
+
+  /time-deposits/balances:
+    post:
+      tags: [time-deposits]
+      operationId: updateAllBalances
+      summary: Update the balances of all time deposits
+      description: |
+        Applies one month of interest to every time deposit according to its plan type
+        and persists the new balances. Interest rules:
+        * no interest during the first 30 days of any plan
+        * `basic` – 1 % p.a. paid monthly
+        * `student` – 3 % p.a. paid monthly, stops after one year
+        * `premium` – 5 % p.a. paid monthly, starts after 45 days
+
+        **Not idempotent:** each call applies one more month of interest, so repeated calls
+        compound. Intended to be triggered once per accrual period (e.g. by a scheduler).
+      responses:
+        '204':
+          description: All balances were updated
+
+components:
+  schemas:
+    TimeDeposit:
+      type: object
+      required: [id, planType, balance, days, withdrawals]
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        planType:
+          type: string
+          description: Plan type identifier (`basic`, `student`, `premium`).
+          example: premium
+        balance:
+          type: number
+          description: Current balance, rounded to 2 decimal places.
+          example: 1250.75
+        days:
+          type: integer
+          format: int32
+          description: Days elapsed since the deposit was opened.
+          example: 90
+        withdrawals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Withdrawal'
+
+    Withdrawal:
+      type: object
+      required: [id, amount, date]
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 10
+        amount:
+          type: number
+          example: 100.00
+        date:
+          type: string
+          format: date
+          example: 2026-09-15
