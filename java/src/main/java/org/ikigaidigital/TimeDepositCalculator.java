@@ -20,8 +20,8 @@ public class TimeDepositCalculator {
         this.policies = policies;
     }
 
-    public void updateBalance(List<TimeDeposit> xs) {
-        for (TimeDeposit deposit : xs) {
+    public void updateBalance(List<TimeDeposit> deposits) {
+        for (TimeDeposit deposit : deposits) {
             double interest = 0;
 
             // The 30-day guard stays here rather than in the policies because it is common
