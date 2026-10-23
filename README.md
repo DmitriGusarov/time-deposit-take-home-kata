@@ -1,3 +1,16 @@
+# Time Deposit Kata — Java solution
+
+![CI](https://github.com/DmitriGusarov/time-deposit-take-home-kata/actions/workflows/ci.yml/badge.svg)
+
+The solution is in [`java/`](java/): Spring Boot 3, hexagonal architecture, contract-first
+OpenAPI, PostgreSQL with Flyway, Testcontainers. See [`java/README.md`](java/README.md) for how
+to run it, trigger the two endpoints through Swagger UI, and the assumptions made.
+Rules for AI-assisted work on this repository: [`CLAUDE.md`](CLAUDE.md).
+
+The original kata description follows.
+
+---
+
 # Time Deposit Refactoring Kata - Take-Home Assignment
 
 ## XA Bank Time Deposit
