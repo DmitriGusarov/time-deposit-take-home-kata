@@ -5,7 +5,8 @@
 The solution is in [`java/`](java/): Spring Boot 3, hexagonal architecture, contract-first
 OpenAPI, PostgreSQL with Flyway, Testcontainers. See [`java/README.md`](java/README.md) for how
 to run it, trigger the two endpoints through Swagger UI, and the assumptions made.
-Rules for AI-assisted work on this repository: [`CLAUDE.md`](CLAUDE.md).
+Rules for AI-assisted work: [`CLAUDE.md`](CLAUDE.md). Tools, setup and what was AI-assisted:
+[`docs/AI_WORKFLOW.md`](docs/AI_WORKFLOW.md).
 
 The original kata description follows.
 

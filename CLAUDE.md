@@ -2,7 +2,7 @@
 
 This file is loaded automatically by Claude Code (and read by any other coding agent
 pointed at the repo). It encodes the kata's constraints so no AI session can violate
-them by accident. Keep it short.
+them by accident. Keep it short; the AI workflow itself is described in docs/AI_WORKFLOW.md.
 
 ## What this repo is
 

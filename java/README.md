@@ -91,3 +91,8 @@ Each assumption is also noted where the decision is made (code comment, migratio
 | Plan type matching | Exact and case-sensitive, as the legacy `equals` comparisons were: `"BASIC"` earns nothing. A `null` plan type throws `NullPointerException` once `days > 30`. Both are kept from the legacy code. |
 | Unknown plan types | Earn no interest and do not fail (legacy behaviour). |
 | Validation / errors | Out of scope per the kata. |
+
+## AI-assisted development
+
+See [`../docs/AI_WORKFLOW.md`](../docs/AI_WORKFLOW.md) for the tools and setup used and which
+parts were AI-assisted; the rules the agent worked under are in [`../CLAUDE.md`](../CLAUDE.md).
